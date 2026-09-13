@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>XonAI — Your AI Learning Partner</title>
+  <meta name="description" content="XonAI — Your AI Learning Partner & All-in-One AI Assistant">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050914;
+      --panel: rgba(13, 20, 38, 0.82);
+      --panel2: rgba(18, 27, 48, 0.92);
+      --border: rgba(90, 140, 255, 0.22);
+      --blue: #2f80ff;
+      --cyan: #29d9ff;
+      --violet: #7b5cff;
+      --text: #f4f7ff;
+      --muted: #94a3bd;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(47,128,255,.16), transparent 28%),
+        radial-gradient(circle at 85% 80%, rgba(123,92,255,.14), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    button,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      height: 100vh;
+      display: flex;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+      width: 270px;
+      background: rgba(5, 9, 20, .92);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      box-shadow: 0 0 25px rgba(47,128,255,.35);
+      font-size: 20px;
+    }
+
+    .new-chat {
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(47,128,255,.2), rgba(123,92,255,.15));
+      color: white;
+      border-radius: 13px;
+      padding: 13px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .new-chat:hover {
+      border-color: rgba(47,128,255,.65);
+    }
+
+    .side-title {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .mode-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 11px;
+      text-align: left;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .mode-btn:hover,
+    .mode-btn.active {
+      background: rgba(47,128,255,.12);
+      border-color: var(--border);
+      color: white;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+        /* ================= MAIN ================= */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,9,20,.55);
+      backdrop-filter: blur(18px);
+    }
+
+    .teacher-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .teacher-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #173b82, #542c91);
+      border: 1px solid rgba(100,160,255,.35);
+    }
+
+    .teacher-name {
+      font-weight: 700;
+    }
+
+    .teacher-status {
+      color: #7ee7ff;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .teacher-select {
+      background: var(--panel2);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px;
+      outline: none;
+    }
+
+    /* ================= CHAT ================= */
+
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px 18px 160px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-inner {
+      width: min(900px, 100%);
+      margin: auto;
+    }
+
+    .welcome {
+      min-height: 55vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .robot {
+      width: 88px;
+      height: 88px;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      font-size: 43px;
+      margin-bottom: 22px;
+      background:
+        linear-gradient(135deg, rgba(47,128,255,.25), rgba(123,92,255,.28));
+      border: 1px solid rgba(100,160,255,.3);
+      box-shadow: 0 0 45px rgba(47,128,255,.18);
+    }
+
+    .welcome h1 {
+      font-size: clamp(32px, 5vw, 55px);
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #fff, #72dfff, #9b8aff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: rgba(18,27,48,.7);
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      border-color: rgba(47,128,255,.6);
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+      animation: appear .2s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(47,128,255,.15);
+      border: 1px solid var(--border);
+    }
+
+    .message.user .message-avatar {
+      background: rgba(123,92,255,.16);
+    }
+
+    .message-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .message-name {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .message-text {
+      color: #edf3ff;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      }
+        .typing {
+      display: inline-flex;
+      gap: 5px;
+      padding: 7px 0;
+    }
+
+    .typing span {
+      width: 7px;
+      height: 7px;
+      background: #6ccfff;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes bounce {
+      0%, 70%, 100% {
+        transform: translateY(0);
+        opacity: .45;
+      }
+      35% {
+        transform: translateY(-5px);
+        opacity: 1;
+      }
+    }
+
+    /* ================= INPUT ================= */
+
+    .input-area {
+      position: fixed;
+      left: 270px;
+      right: 0;
+      bottom: 0;
+      padding: 18px;
+      background: linear-gradient(
+        transparent,
+        rgba(5,9,20,.96) 35%
+      );
+    }
+
+    .input-wrap {
+      width: min(900px, 100%);
+      margin: auto;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(13,20,38,.92);
+      border: 1px solid rgba(90,140,255,.3);
+      border-radius: 18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.3);
+      backdrop-filter: blur(20px);
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 46px;
+      max-height: 160px;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      padding: 13px 8px;
+      line-height: 1.5;
+    }
+
+    textarea::placeholder {
+      color: #71809b;
+    }
+
+    .icon-btn,
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-btn {
+      background: rgba(255,255,255,.035);
+      color: #cbd5e1;
+    }
+
+    .icon-btn:hover {
+      background: rgba(47,128,255,.12);
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: white;
+      font-size: 18px;
+      border: none;
+    }
+
+    .send-btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .input-note {
+      text-align: center;
+      color: #64748b;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .file-name {
+      color: #8edfff;
+      font-size: 12px;
+      padding: 4px 8px;
+      display: none;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 800px) {
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0 13px;
+      }
+
+      .input-area {
+        left: 0;
+        padding: 12px;
+      }
+
+      .chat {
+        padding-top: 18px;
+        padding-bottom: 145px;
+      }
+
+      .welcome {
+        min-height: 60vh;
+      }
+
+      .welcome h1 {
+        font-size: 36px;
+      }
+
+      .teacher-select {
+        max-width: 120px;
+      }
+
+      .message {
+        gap: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-icon">X</div>
+      <span>XonAI</span>
+    </div>
+
+    <button class="new-chat" onclick="newChat()">
+      ＋ New Chat
+    </button>
+
+    <div class="side-title">Modes</div>
+
+    <div class="mode-list">
+
+      <button class="mode-btn active" onclick="setMode('Teacher Mode', this)">
+        🎓 Teacher Mode
+      </button>
+
+      <button class="mode-btn" onclick="setMode('Study Companion', this)">
+        📚 Study Companion
+      </button>
+
+      <button class="mode-btn" onclick="setMode('Science Decoder', this)">
+        🔬 Science Decoder
+      </button>
+
+      <button class="mode-btn" onclick="setMode('Exam Mode', this)">
+        📝 Exam Mode
+      </button>
+
+      <button class="mode-btn" onclick="setMode('General Assistant', this)">
+        🤖 General Assistant
+      </button>
+
+      <button class="mode-btn" onclick="setMode('Quick Answer', this)">
+        ⚡ Quick Answer
+      </button>
+
+    </div>
+
+    <div class="sidebar-bottom">
+      <b>XonAI</b><br>
+      Your AI Learning Partner & All-in-One AI Assistant.
+    </div>
+
+  </aside>
+    <!-- ================= MAIN ================= -->
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="teacher-area">
+
+        <div class="teacher-avatar" id="teacherAvatar">
+          🤖
+        </div>
+
+        <div>
+          <div class="teacher-name" id="teacherName">
+            Dr-X
+          </div>
+
+          <div class="teacher-status">
+            ● AI Teacher Online
+          </div>
+        </div>
+
+      </div>
+
+      <select class="teacher-select" id="teacherSelect"
+              onchange="changeTeacher()">
+
+        <option value="Dr-X">Dr-X</option>
+        <option value="Miss Xa">Miss Xa</option>
+
+      </select>
+
+    </header>
+
+    <!-- ================= CHAT ================= -->
+
+    <section class="chat" id="chat">
+
+      <div class="chat-inner" id="chatInner">
+
+        <div class="welcome" id="welcome">
+
+          <div class="robot">🤖</div>
+
+          <h1>Hey, I'm XonAI</h1>
+
+          <p>
+            Your AI Learning Partner & All-in-One AI Assistant.
+            Ask me anything, learn step-by-step, practice and improve.
+          </p>
+
+          <div class="chips">
+
+            <button class="chip"
+              onclick="usePrompt('Explain Newton’s laws in very simple Hinglish')">
+              🧠 Explain a topic
+            </button>
+
+            <button class="chip"
+              onclick="usePrompt('Solve this maths problem step by step')">
+              ➗ Solve Maths
+            </button>
+
+            <button class="chip"
+              onclick="usePrompt('Teach me an interesting science concept')">
+              🔬 Learn Science
+            </button>
+
+            <button class="chip"
+              onclick="usePrompt('Give me 5 practice questions')">
+              📝 Practice
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ================= INPUT ================= -->
+
+<div class="input-area">
+
+  <div class="input-wrap">
+
+    <div class="file-name" id="fileName"></div>
+
+    <div class="input-box">
+
+      <input
+        type="file"
+        id="fileInput"
+        hidden
+        accept="image/*,.pdf,.txt"
+        onchange="fileSelected()"
+      >
+
+      <button
+        class="icon-btn"
+        title="Attach file"
+        onclick="document.getElementById('fileInput').click()">
+        📎
+      </button>
+
+      <button
+        class="icon-btn"
+        id="voiceBtn"
+        title="Voice input"
+        onclick="startVoice()">
+        🎙️
+      </button>
+
+      <textarea
+        id="messageInput"
+        rows="1"
+        placeholder="Ask XonAI anything..."
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+
+      <button
+        class="send-btn"
+        id="sendBtn"
+        onclick="sendMessage()">
+        ➤
+      </button>
+
+    </div>
+
+    <div class="input-note">
+      XonAI can make mistakes. Verify important information.
+    </div>
+
+  </div>
+
+</div>
+  
+  <script>
+
+  /* ==================================================
+     XONAI BACKEND CONNECTION
+     ================================================== */
+
+  /*
+    IMPORTANT:
+
+    If index.html and server.js are on the SAME server:
+      const API_URL = "/api/chat";
+
+    If index.html is on GitHub Pages and server.js
+    is deployed separately on Render:
+      replace it with your Render backend URL.
+
+    Example:
+      https://your-xonai-backend.onrender.com/api/chat
+  */
+
+  const API_URL = "/api/chat";
+
+
+  /* ==================================================
+     STATE
+     ================================================== */
+
+  let currentMode = "Teacher Mode";
+  let currentTeacher = "Dr-X";
+  let conversation = [];
+
+  const input = document.getElementById("messageInput");
+  const chatInner = document.getElementById("chatInner");
+  const chat = document.getElementById("chat");
+  const sendBtn = document.getElementById("sendBtn");
+
+
+  /* ==================================================
+     TEACHER
+     ================================================== */
+
+  function changeTeacher() {
+
+    currentTeacher =
+      document.getElementById("teacherSelect").value;
+
+    document.getElementById("teacherName").textContent =
+      currentTeacher;
+
+    document.getElementById("teacherAvatar").textContent =
+      currentTeacher === "Dr-X" ? "🤖" : "👩‍🏫";
+  }
+
+
+  /* ==================================================
+     MODE
+     ================================================== */
+
+  function setMode(mode, button) {
+
+    currentMode = mode;
+
+    document
+      .querySelectorAll(".mode-btn")
+      .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    addMessage(
+      "assistant",
+      `${currentTeacher} is now in ${mode}. What would you like to learn?`
+    );
+  }
+
+
+  /* ==================================================
+     NEW CHAT
+     ================================================== */
+
+  function newChat() {
+
+    conversation = [];
+
+    chatInner.innerHTML = `
+      <div class="welcome" id="welcome">
+
+        <div class="robot">🤖</div>
+
+        <h1>Hey, I'm XonAI</h1>
+
+        <p>
+          Your AI Learning Partner & All-in-One AI Assistant.
+          Ask me anything, learn step-by-step, practice and improve.
+        </p>
+
+        <div class="chips">
+
+          <button class="chip"
+            onclick="usePrompt('Explain Newton’s laws in very simple Hinglish')">
+            🧠 Explain a topic
+          </button>
+
+          <button class="chip"
+            onclick="usePrompt('Solve this maths problem step by step')">
+            ➗ Solve Maths
+          </button>
+
+          <button class="chip"
+            onclick="usePrompt('Teach me an interesting science concept')">
+            🔬 Learn Science
+          </button>
+
+          <button class="chip"
+            onclick="usePrompt('Give me 5 practice questions')">
+            📝 Practice
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+    input.focus();
+  }
+
+
+  /* ==================================================
+     PROMPT CHIP
+     ================================================== */
+
+  function usePrompt(text) {
+
+    input.value = text;
+
+    autoResize(input);
+
+    input.focus();
+
+    sendMessage();
+  }
+
+
+  /* ==================================================
+     KEYBOARD
+     ================================================== */
+
+  function handleKey(event) {
+
+    if (event.key === "Enter" && !event.shiftKey) {
+
+      event.preventDefault();
+
+      sendMessage();
+    }
+  }
+
+
+  /* ==================================================
+     AUTO RESIZE
+     ================================================== */
+
+  function autoResize(element) {
+
+    element.style.height = "auto";
+
+    element.style.height =
+      Math.min(element.scrollHeight, 160) + "px";
+  }
+
+
+  /* ==================================================
+     ADD MESSAGE
+     ================================================== */
+
+  function addMessage(role, text) {
+
+    const welcome = document.getElementById("welcome");
+
+    if (welcome) {
+      welcome.remove();
+    }
+
+    const message = document.createElement("div");
+
+    message.className =
+      `message ${role}`;
+
+    const avatar =
+      role === "user"
+        ? "👤"
+        : currentTeacher === "Dr-X"
+          ? "🤖"
+          : "👩‍🏫";
+
+    const name =
+      role === "user"
+        ? "You"
+        : currentTeacher;
+
+    message.innerHTML = `
+      <div class="message-avatar">
+        ${avatar}
+      </div>
+
+      <div class="message-content">
+
+        <div class="message-name">
+          ${name}
+        </div>
+
+        <div class="message-text"></div>
+
+      </div>
+    `;
+
+    message
+      .querySelector(".message-text")
+      .textContent = text;
+
+    chatInner.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+
+  /* ==================================================
+     TYPING INDICATOR
+     ================================================== */
+
+  function showTyping() {
+
+    const typing = document.createElement("div");
+
+    typing.className = "message";
+    typing.id = "typing";
+
+    typing.innerHTML = `
+      <div class="message-avatar">
+        🤖
+      </div>
+
+      <div class="message-content">
+
+        <div class="message-name">
+          ${currentTeacher}
+        </div>
+
+        <div class="typing">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+    `;
+
+    chatInner.appendChild(typing);
+
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+
+  function removeTyping() {
+
+    const typing =
+      document.getElementById("typing");
+
+    if (typing) {
+      typing.remove();
+      
+    }
+  }
+   /* ==================================================
+     SEND MESSAGE
+     ================================================== */
+
+  async function sendMessage() {
+
+    const text =
+      input.value.trim();
+
+    if (!text || sendBtn.disabled) {
+      return;
+    }
+
+    addMessage("user", text);
+
+    conversation.push({
+      role: "user",
+      content: text
+    });
+
+    input.value = "";
+    autoResize(input);
+
+    sendBtn.disabled = true;
+
+    showTyping();
+
+    try {
+
+      const response =
+        await fetch(API_URL, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+
+            messages: conversation,
+
+            mode: currentMode,
+
+            teacher: currentTeacher
+
+          })
+
+        });
+
+
+      const data =
+        await response.json();
+
+
+      removeTyping();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "AI request failed."
+        );
+
+      }
+
+
+      const answer =
+        data.answer ||
+        data.message ||
+        "Sorry, XonAI returned an empty response.";
+
+
+      addMessage(
+        "assistant",
+        answer
+      );
+
+
+      conversation.push({
+        role: "assistant",
+        content: answer
+      });
+
+
+    } catch (error) {
+
+      removeTyping();
+
+      addMessage(
+        "assistant",
+        "⚠️ XonAI backend se connection nahi ho paya.\n\n" +
+        "Check karo ki server.js Node.js hosting par running hai aur API_URL sahi hai."
+      );
+
+      console.error(
+        "XonAI Error:",
+        error
+      );
+
+    } finally {
+
+      sendBtn.disabled = false;
+
+      input.focus();
+    }
+  }
+
+
+  /* ==================================================
+     VOICE INPUT
+     ================================================== */
+
+  function startVoice() {
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+      alert(
+        "Voice input is not supported in this browser."
+      );
+
+      return;
+    }
+
+    const recognition =
+      new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+
+    const voiceBtn =
+      document.getElementById("voiceBtn");
+
+    voiceBtn.textContent = "🔴";
+
+    recognition.start();
+
+
+    recognition.onresult = function(event) {
+
+      const transcript =
+        event.results[0][0].transcript;
+
+      input.value +=
+        (input.value ? " " : "") +
+        transcript;
+
+      autoResize(input);
+    };
+
+
+    recognition.onerror =
+      function() {
+
+        alert(
+          "Voice input could not be started."
+        );
+      };
+
+
+    recognition.onend =
+      function() {
+
+        voiceBtn.textContent = "🎙️";
+      };
+  }
+
+
+  /* ==================================================
+     FILE SELECTION
+     ================================================== */
+
+  function fileSelected() {
+
+    const file =
+      document.getElementById("fileInput").files[0];
+
+    const fileName =
+      document.getElementById("fileName");
+
+    if (!file) {
+
+      fileName.style.display = "none";
+
+      return;
+    }
+
+    fileName.textContent =
+      "📎 " + file.name;
+
+    fileName.style.display = "block";
+
+    /*
+      NOTE:
+
+      This version only selects the file.
+      Actual image/PDF understanding requires
+      a backend upload + AI vision/file pipeline.
+    */
+  }
+
+</script>
+
+</body>
+</html>   
+  
+  
+    
