@@ -8,9 +8,8 @@ const PORT = process.env.PORT || 3000;
 
 const AI_API_KEY = process.env.AI_API_KEY;
 
-const AI_BASE_URL = "https://api.openai.com/v1";
-
-const AI_MODEL = "gpt-5.6-luna";
+const AI_BASE_URL = "https://api.groq.com/openai/v1";
+const AI_MODEL = "llama-3.3-70b-versatile";
 
 app.disable("x-powered-by");
 
