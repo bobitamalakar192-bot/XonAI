@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XonAI — Dashboard</title>
+<style>
+:root{
+  --bg:#080b12;
+  --panel:#0e1420;
+  --panel2:#111927;
+  --line:#263449;
+  --text:#eef3fb;
+  --muted:#8d9aaf;
+  --blue:#65c8ff;
+  --blue2:#398cff;
+  --violet:#9a7cff;
+  --cyan:#54e4e9;
+  --green:#73d6b2;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:
+radial-gradient(circle at 50% 30%,rgba(48,105,160,.13),transparent 34%),
+radial-gradient(circle at 15% 80%,rgba(83,73,150,.08),transparent 28%),
+var(--bg);color:var(--text)}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:76px;border-bottom:1px solid rgba(117,143,177,.16);display:flex;align-items:center;padding:0 28px;gap:24px;background:rgba(6,9,15,.72);backdrop-filter:blur(18px);position:relative;z-index:10}
+.brand{display:flex;align-items:center;gap:12px;min-width:185px}
+.brandmark{width:42px;height:42px;border:1px solid rgba(84,228,233,.65);border-radius:13px;display:grid;place-items:center;position:relative;box-shadow:0 0 24px rgba(54,183,255,.16)}
+.brandmark:before,.brandmark:after{content:"";position:absolute;border:1px solid rgba(101,200,255,.55);border-radius:50%;transform:rotate(45deg)}
+.brandmark:before{width:19px;height:19px}.brandmark:after{width:9px;height:9px;border-color:var(--cyan)}
+.brandname{font-size:23px;font-weight:750;letter-spacing:-.5px}
+.search{flex:1;max-width:620px;margin:auto;position:relative}
+.search input{width:100%;height:42px;border:1px solid #25344b;border-radius:22px;background:#0d1522;color:var(--text);padding:0 48px 0 18px;outline:none}
+.search input:focus{border-color:#4389ba;box-shadow:0 0 20px rgba(57,140,255,.1)}
+.search span{position:absolute;right:17px;top:10px;color:#8292a8}
+.profile{display:flex;align-items:center;gap:10px;border:1px solid #25344b;border-radius:25px;padding:5px 10px 5px 5px;background:#0d1420}
+.avatar{width:34px;height:34px;border-radius:50%;border:1px solid #5c8db9;display:grid;place-items:center;color:#bcecff;background:radial-gradient(circle,#19314a,#0c111a)}
+.profile small{color:var(--muted);display:block}.profile b{font-size:13px}
+.menuBtn{display:none}
+.layout{display:grid;grid-template-columns:230px 1fr;flex:1}
+.sidebar{border-right:1px solid rgba(117,143,177,.13);padding:18px 12px;background:rgba(8,12,19,.48)}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{border:0;background:transparent;color:#aeb9c9;text-align:left;padding:12px 14px;border-radius:11px;transition:.2s}
+.nav button:hover{background:#121b29;color:#fff}
+.nav button.active{background:linear-gradient(90deg,#17273a,#101b2a);color:#fff;box-shadow:inset 2px 0 var(--blue)}
+.nav i{display:inline-block;width:24px;color:#83a6c8;font-style:normal}
+.main{padding:22px 26px 34px;max-width:1280px;width:100%;margin:auto}
+.hero{min-height:310px;border:1px solid #263a52;border-radius:24px;background:
+radial-gradient(circle at 75% 45%,rgba(70,149,207,.12),transparent 27%),
+linear-gradient(135deg,#0c1420,#09101a);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center}
+.hero:before{content:"";position:absolute;width:440px;height:440px;border:1px solid rgba(92,180,231,.10);border-radius:50%;box-shadow:0 0 80px rgba(42,145,203,.06)}
+.heroContent{position:relative;z-index:2}
+.core{width:180px;height:180px;margin:auto;position:relative;display:grid;place-items:center}
+.ring{position:absolute;border:1px solid rgba(90,193,237,.3);border-radius:50%;inset:10px;animation:spin 18s linear infinite}
+.ring.r2{inset:27px;border-color:rgba(154,124,255,.27);animation-duration:12s;animation-direction:reverse}
+.ring.r3{inset:45px;border-color:rgba(84,228,233,.32);animation-duration:8s}
+.coreOrb{width:76px;height:76px;border:1px solid #5ac7ec;border-radius:46% 54% 51% 49%;transform:rotate(45deg);background:radial-gradient(circle at 35% 30%,#315773,#101b29 62%);box-shadow:0 0 34px rgba(69,192,239,.2),inset 0 0 22px rgba(86,228,233,.12);position:relative}
+.coreOrb:after{content:"";position:absolute;inset:25px;border:1px solid var(--cyan);transform:rotate(-45deg);box-shadow:0 0 14px var(--cyan)}
+.node{position:absolute;width:7px;height:7px;border-radius:50%;background:#a7eaff;box-shadow:0 0 12px #65c8ff}
+.n1{top:23px;left:39px}.n2{right:24px;top:76px}.n3{bottom:28px;left:66px}
+.status{margin-top:12px;color:#aab6c8;font-size:16px;letter-spacing:.4px}
+.hero h1{margin:20px 0 7px;font-size:31px;letter-spacing:-1px}
+.hero p{margin:0;color:#7f8da1;font-size:15px}
+.quick{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.quick button{background:#101a28;border:1px solid #26384e;color:#bdc8d7;padding:9px 14px;border-radius:10px}
+.quick button:hover{border-color:#4a789b;color:#fff}
+.chat{margin-top:18px;border:1px solid #25354a;background:rgba(11,17,27,.82);border-radius:22px;padding:12px;box-shadow:0 15px 50px rgba(0,0,0,.18)}
+.chatbox{display:flex;align-items:center;gap:9px}
+.chatbox input{flex:1;min-width:0;background:#0b121d;border:1px solid #24344a;border-radius:15px;height:50px;padding:0 16px;color:#fff;outline:none}
+.iconBtn{width:46px;height:46px;border-radius:13px;background:#101a29;border:1px solid #2a3b51;color:#aebdce}
+.send{background:linear-gradient(135deg,#4a91d5,#8168d9);border:0;color:#fff;box-shadow:0 0 20px rgba(91,121,220,.18)}
+.hidden{display:none!important}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);backdrop-filter:blur(3px);z-index:20}
+.drawer{position:fixed;z-index:21;left:14px;top:90px;width:280px;max-height:calc(100vh - 105px);overflow:auto;background:#0b121d;border:1px solid #2b3b50;border-radius:18px;padding:16px;box-shadow:0 24px 80px rgba(0,0,0,.55)}
+.drawer h3{margin:5px 5px 14px;font-size:15px;color:#aab8cb}
+.drawer button{width:100%;padding:12px;border:1px solid transparent;background:transparent;color:#b7c3d3;text-align:left;border-radius:10px}
+.drawer button:hover{background:#131d2b;color:#fff;border-color:#26384d}
+.drawer .section{margin-top:14px;padding-top:12px;border-top:1px solid #1f2b3b}
+.modalWrap{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);padding:18px}
+.modal{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0b121d;border:1px solid #2b3d53;border-radius:22px;padding:22px;box-shadow:0 25px 90px #000}
+.modalHead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #202d3d;padding-bottom:15px}
+.modal h2{margin:0;font-size:21px}.close{background:transparent;border:0;color:#9eacbf;font-size:24px}
+.settingsGroup{padding:18px 0;border-bottom:1px solid #202d3d}
+.settingsGroup h3{margin:0 0 14px;font-size:16px}
+.options{display:flex;flex-wrap:wrap;gap:9px}
+.option{padding:10px 14px;border:1px solid #29394d;background:#101928;color:#aebacc;border-radius:10px}
+.option.selected{border-color:#4f9ac4;color:#eaf8ff;box-shadow:0 0 15px rgba(70,180,235,.08)}
+.switchrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;color:#9eacbd}
+.switch{width:48px;height:27px;border-radius:20px;background:#172235;border:1px solid #304158;padding:3px}
+.switch.on{background:#176187}.switch span{display:block;width:19px;height:19px;background:#9aa8ba;border-radius:50%;transition:.2s}.switch.on span{margin-left:19px;background:#66d7ff}
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:12px}.planBox{border:1px solid #29394e;border-radius:15px;padding:16px;background:#101824}.planBox h3{margin:0 0 5px}.price{font-size:23px;font-weight:700;margin:10px 0}.planBox button{width:100%;padding:10px;border-radius:9px;border:1px solid #3b75a2;background:#102033;color:#d8edff}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){
+ .topbar{height:68px;padding:0 16px}.brand{min-width:auto}.brandname{font-size:20px}.search{display:none}.profile small,.profile b{display:none}.menuBtn{display:block;margin-left:auto;width:43px;height:43px;border-radius:12px;background:#0d1521;border:1px solid #2b3b51;color:#d9e6f3;font-size:21px}
+ .layout{display:block}.sidebar{display:none}.main{padding:12px 12px 28px}.hero{min-height:540px;border-radius:22px}.hero h1{font-size:27px}.hero p{padding:0 20px}.core{width:205px;height:205px}.chat{border-radius:18px}.chatbox{gap:6px}.iconBtn{width:42px;height:42px}.chatbox input{height:46px}
+}
+@media(max-width:520px){
+ .topbar{gap:8px}.brandmark{width:38px;height:38px}.brandname{font-size:19px}.profile{padding:4px}.avatar{width:34px;height:34px}
+ .hero{min-height:590px}.hero h1{font-size:25px}.quick{padding:0 12px}.quick button{font-size:13px}
+ .chatbox input{font-size:13px;padding:0 11px}.iconBtn{width:39px;height:39px}
+ .drawer{top:78px;left:9px;width:calc(100vw - 18px)}
+ .plan{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <div class="brandmark"></div><div class="brandname">XonAI</div>
+  </div>
+  <div class="search"><input id="search" placeholder="Search anything..."><span>⌕</span></div>
+  <button class="menuBtn" id="mobileMenu" aria-label="Open menu">☰</button>
+  <button class="profile" id="profileBtn">
+    <div class="avatar">◎</div><div><b>XonAI Learner</b><small>Learning profile</small></div>
+  </button>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+ <nav class="nav">
+  <button class="active" data-page="home"><i>⌂</i> Home</button>
+  <button data-page="teacher"><i>◈</i> AI Teacher</button>
+  <button data-page="library"><i>▣</i> Library</button>
+  <button data-page="solver"><i>⌑</i> Photo Solver</button>
+  <button data-page="voice"><i>◉</i> Voice Teacher</button>
+  <button data-page="video"><i>▹</i> AI Video / GIF Lab</button>
+  <button data-page="diagram"><i>◇</i> AI Diagram Lab</button>
+  <button data-page="games"><i>◆</i> Study Games</button>
+  <button data-page="live"><i>◌</i> Live Class</button>
+  <button data-page="mystery"><i>◉</i> Mystery / Science Decoder</button>
+  <button data-page="exam"><i>◎</i> Exam Intelligence</button>
+  <button data-page="tests"><i>▤</i> Tests & Mock Exams</button>
+  <button data-page="revision"><i>↻</i> Smart Revision</button>
+  <button data-page="progress"><i>↗</i> Progress</button>
+  <button data-page="planner"><i>□</i> AI Planner & Reminders</button>
+  <button data-page="parent"><i>♧</i> Parent Mode</button>
+  <button id="settingsSide"><i>⚙</i> Profile & Settings</button>
+  <button id="subscriptionSide"><i>◇</i> Subscription / Pro</button>
+ </nav>
+</aside>
+
+<main class="main">
+ <section class="hero">
+  <div class="heroContent">
+   <div class="core" id="core">
+    <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <div class="node n1"></div><div class="node n2"></div><div class="node n3"></div>
+    <div class="coreOrb"></div>
+   </div>
+   <div class="status" id="status">Ready to listen</div>
+   <div class="status" style="font-size:20px;color:#56c8f0;letter-spacing:7px;margin-top:8px">| || |</div>
+   <h1>Welcome back, learner.</h1>
+   <p>Come back, bro. Let's make something brilliant today.</p>
+   <div class="quick">
+    <button data-action="teacher">Start learning</button>
+    <button data-action="history">Continue learning</button>
+    <button data-action="voice">Talk to XonAI</button>
+   </div>
+  </div>
+ </section>
+
+ <section class="chat">
+  <div class="chatbox">
+   <button class="iconBtn" id="attach" title="Attach file">⌇</button>
+   <input id="message" placeholder="Ask XonAI anything...">
+   <button class="iconBtn" id="mic" title="Microphone">◉</button>
+   <button class="iconBtn send" id="send" title="Send">➜</button>
+  </div>
+ </section>
+</main>
+</div>
+</div>
+
+<div class="overlay hidden" id="overlay"></div>
+<div class="drawer hidden" id="drawer">
+ <h3>XONAI MENU</h3>
+ <button data-page="home">Home</button>
+ <button data-page="teacher">AI Teacher</button>
+ <button data-page="library">Library</button>
+ <button data-page="solver">Photo Solver</button>
+ <button data-page="voice">Voice Teacher</button>
+ <button data-page="video">AI Video / GIF Lab</button>
+ <button data-page="diagram">AI Diagram Lab</button>
+ <button data-page="games">Study Games</button>
+ <button data-page="live">Live Class</button>
+ <button data-page="mystery">Mystery / Science Decoder</button>
+ <button data-page="exam">Exam Intelligence</button>
+ <button data-page="tests">Tests & Mock Exams</button>
+ <button data-page="revision">Smart Revision</button>
+ <button data-page="progress">Progress</button>
+ <button data-page="planner">AI Planner & Reminders</button>
+ <button data-page="parent">Parent Mode</button>
+ <div class="section">
+  <button id="drawerHistory">History</button>
+  <button id="drawerSubscription">Subscription / Pro</button>
+  <button id="drawerSettings">Settings</button>
+ </div>
+</div>
+
+<div class="modalWrap hidden" id="modalWrap">
+ <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const API_URL="https://xonai.onrender.com/api/chat";
+const drawer=document.getElementById("drawer"),overlay=document.getElementById("overlay"),modalWrap=document.getElementById("modalWrap"),modal=document.getElementById("modal");
+function openDrawer(){drawer.classList.remove("hidden");overlay.classList.remove("hidden")}
+function closeDrawer(){drawer.classList.add("hidden");overlay.classList.add("hidden")}
+document.getElementById("mobileMenu").onclick=openDrawer;
+overlay.onclick=closeDrawer;
+
+function openModal(type){
+ let title="",body="";
+ if(type==="settings"){
+  title="Profile & Settings";
+  body=`
+  <div class="settingsGroup"><h3>Appearance</h3><div class="options">
+   <button class="option selected" onclick="setTheme('dark',this)">Dark</button>
+   <button class="option" onclick="setTheme('light',this)">Light</button>
+   <button class="option" onclick="setTheme('midnight',this)">Midnight</button>
+   <button class="option" onclick="setTheme('silver',this)">Neutral Silver</button>
+  </div></div>
+  <div class="settingsGroup"><h3>Language</h3><div class="options">
+   <button class="option selected">English</button><button class="option">Hindi</button><button class="option">Hinglish</button><button class="option">Assamese</button>
+  </div></div>
+  <div class="settingsGroup"><h3>Voice</h3><div class="options">
+   <button class="option selected">Male</button><button class="option">Female</button><button class="option">Neutral</button>
+  </div></div>
+  <div class="settingsGroup"><h3>Notifications</h3>
+   <div class="switchrow">Study reminders <button class="switch on"><span></span></button></div>
+   <div class="switchrow">Revision reminders <button class="switch on"><span></span></button></div>
+   <div class="switchrow">Sounds <button class="switch"><span></span></button></div>
+  </div>
+  <div class="settingsGroup"><h3>Memory & Personalization</h3>
+   <div class="switchrow">Learning personalization <button class="switch on"><span></span></button></div>
+   <div class="switchrow">Memory <button class="switch on"><span></span></button></div>
+  </div>
+  <div class="settingsGroup"><h3>Chat</h3>
+   <div class="switchrow">Enter to send <button class="switch on"><span></span></button></div>
+   <div class="switchrow">Show timestamps <button class="switch"><span></span></button></div>
+  </div>
+  <div class="settingsGroup"><h3>Privacy & Security</h3><div class="options"><button class="option">Data controls</button><button class="option">Sign out</button></div></div>`;
+ }
+ if(type==="subscription"){
+  title="Subscription";
+  body=`<div class="settingsGroup"><p style="color:#9eacbd">Choose the plan that fits your learning needs.</p>
+   <div class="plan"><div class="planBox"><h3>Pro</h3><div class="price">₹99</div><p style="color:#8997aa">More AI learning tools, voice teacher and personalized practice.</p><button>Upgrade to Pro</button></div>
+   <div class="planBox"><h3>Pro+</h3><div class="price">₹249</div><p style="color:#8997aa">Higher usage, advanced personalization and premium tools.</p><button>Upgrade to Pro+</button></div></div>
+  </div>`;
+ }
+ if(type==="history"){
+  title="Learning History";
+  body=`<div class="settingsGroup"><h3>Recent learning</h3><p style="color:#9eacbd">Your recent conversations and study sessions will appear here.</p></div>`;
+ }
+ modal.innerHTML=`<div class="modalHead"><h2>${title}</h2><button class="close" onclick="closeModal()">×</button></div>${body}`;
+ modalWrap.classList.remove("hidden");
+}
+function closeModal(){modalWrap.classList.add("hidden")}
+modalWrap.onclick=e=>{if(e.target===modalWrap)closeModal()}
+document.getElementById("profileBtn").onclick=()=>openModal("settings");
+document.getElementById("settingsSide").onclick=()=>openModal("settings");
+document.getElementById("subscriptionSide").onclick=()=>openModal("subscription");
+document.getElementById("drawerSettings").onclick=()=>{closeDrawer();openModal("settings")}
+document.getElementById("drawerSubscription").onclick=()=>{closeDrawer();openModal("subscription")}
+document.getElementById("drawerHistory").onclick=()=>{closeDrawer();openModal("history")}
+
+document.querySelectorAll("[data-page]").forEach(btn=>btn.addEventListener("click",()=>{
+ const page=btn.dataset.page;
+ if(page==="home"){closeDrawer();return}
+ closeDrawer();
+ document.getElementById("status").textContent=page==="voice"?"Voice Teacher ready":page==="teacher"?"AI Teacher ready":"Feature preview ready";
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+}));
+
+document.querySelectorAll(".switch").forEach(s=>s.onclick=()=>s.classList.toggle("on"));
+function setTheme(t,el){
+ document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));el.classList.add("selected");
+ if(t==="light")document.body.style.setProperty("--bg","#edf1f5");
+ else if(t==="silver")document.body.style.setProperty("--bg","#11161d");
+ else document.body.style.setProperty("--bg","#080b12");
+}
+document.querySelectorAll(".quick").forEach(q=>q.addEventListener("click",e=>{
+ if(e.target.tagName==="BUTTON"){
+  const a=e.target.dataset.action;
+  document.getElementById("status").textContent=a==="voice"?"Listening...":"XonAI is ready";
+ }
+}));
+document.getElementById("mic").onclick=()=>{
+ document.getElementById("status").textContent="Listening...";
+ setTimeout(()=>document.getElementById("status").textContent="Ready to listen",1800);
+};
+document.getElementById("attach").onclick=()=>alert("File attachment is ready to connect.");
+async function sendMessage(){
+ const input=document.getElementById("message"),text=input.value.trim();
+ if(!text)return;
+ document.getElementById("status").textContent="Thinking...";
+ try{
+  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text})});
+  const d=await r.json();
+  document.getElementById("status").textContent=d.reply?"XonAI replied":"Ready to listen";
+ }catch(e){document.getElementById("status").textContent="Ready to listen"}
+ input.value="";
+}
+document.getElementById("send").onclick=sendMessage;
+document.getElementById("message").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});
+</script>
+</body>
+</html>
