@@ -1,18 +1,19 @@
 {
-  "name": "xonai-backend",
-  "version": "1.0.0",
-  "description": "XonAI - Your AI Learning Partner & All-in-One AI Assistant",
-  "main": "server.js",
+  "name": "xonai-ai",
+  "version": "1.4.1",
+  "private": true,
+  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "preflight": "node scripts/preflight.mjs",
+    "validate:env": "node scripts/validate-env.mjs",
+    "db:migrate": "node db/migrate-json-to-postgres.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
+    "launch-audit": "node scripts/launch-audit.mjs"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^5.1.0"
-  },
-  "engines": {
-    "node": ">=18"
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
   }
 }

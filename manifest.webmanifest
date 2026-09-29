@@ -1,0 +1,10 @@
+{
+  "name": "XonAI AI",
+  "short_name": "XonAI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eef8ff",
+  "theme_color": "#7dd3fc",
+  "description": "Your AI Teacher. Your Way of Learning.",
+  "icons": []
+}
